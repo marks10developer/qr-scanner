@@ -24,7 +24,7 @@ body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+    font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     font-size:12px;
     height:100%;
     margin:0px;
@@ -34,35 +34,12 @@ body {
 
 /* Portrait layout (default) */
 .app {
-    display: none;
+    /*display: none;*/
 }
 .header{
     height: 40px;
 }
-#panel-history{
-    background-color: #525d63;
-    color: #ffffff;
-    text-shadow: none;
-}
-#scan{
-    margin: 25% 10%;
-    background: #0f3243;
-    color: #ffffff;
-    text-shadow: none;
-    padding: 20px;
-}
-#history-btn{
-    background: url('../img/history.png') ;
-    background-size: 32px 32px;
-    background-repeat: no-repeat;
-    width: 32px;
-    height: 32px;
-}
-div.history-list div.items div{
-    border-bottom: 1px solid #aaa;
-    padding: 3px 0;
-    width: 100%;
-}
+ 
 div.history-list div.items div a{
     color: #eee; 
     width: 95%;
@@ -72,13 +49,17 @@ div.history-list div.items div a{
     overflow: hidden;
     text-decoration: none;
 }
-#clear-all{
-    visibility: hidden;
-}
-.no-border{
-    border: none !important;
+.text-center{
     text-align: center;
 }
-#clear-dialog{
-    text-align: center;
+
+.navbar, .subnavbar, .toolbar,
+.button.button-fill{
+    background: #0f3243 !important;
+}
+.modal-text{
+    word-wrap: break-word;
+}
+.hidden{
+    display: none !important;
 }

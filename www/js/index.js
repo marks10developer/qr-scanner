@@ -1,23 +1,54 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+var fw7 = new Framework7({
+    modalTitle: 'Framework7', 
+    material: true,
+});
+// Export selectors engine
+var $$ = Dom7;
+
+// Page Init history page
+$$(document).on('pageInit', '.page[data-page="history"]', function (e) {
+    app.displayHistoryItems();
+    // Clear all history
+    $$('.delete').on('click',function(){
+        fw7.confirm('','Delete all history?', function(){
+            // OK
+            app.clearHistoryItems();
+        }, function(){
+            // Cancel    
+        });    
+    });
+});
+
+// Start scanning code
+$$('a#scan').on('click', function(){
+    var history_items = (window.localStorage.getItem("history_items") != null) ? JSON.parse(window.localStorage.getItem("history_items")) : new Array;
+    cordova.plugins.barcodeScanner.scan(
+        function (result) {
+            if (!result.cancelled) { 
+                if (app.isValidURL(result.text)) { 
+                    fw7.alert(result.text, 'URL found', function(){
+                        cordova.InAppBrowser.open(result.text, '_system', 'location=yes');
+                    }); 
+                }else{
+                    fw7.alert(result.text, 'Code found');
+                }
+                history_items.push(result.text);  
+                window.localStorage.setItem("history_items", JSON.stringify(history_items));
+            } 
+        }, 
+        function (error) {
+            fw7.alert(error, "Scanning failed");
+        }
+    );
+});
+
+
+// Add main view
+var mainView = fw7.addView('.view-main', {});
+
+
 var app = {
-    default_no_items_text : 'No History Items',
+    default_no_items_text : 'No Items',
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -31,8 +62,7 @@ var app = {
         document.addEventListener('pause', this.onPause, false);
         document.addEventListener('resume', this.onResume, false);
         document.addEventListener('backbutton', function() {
-          // pass exitApp as callbacks to the switchOff method
-          window.plugins.flashlight.switchOff(this.exitApp, this.exitApp);
+          // pass exitApp as callbacks to the switchOff method 
         }, false);
 
     },
@@ -47,41 +77,18 @@ var app = {
     receivedEvent: function(id) {
         $('.app').show();
         new FastClick(document.body); 
-        appAds.init(); 
-        
-        app.displayHistoryItems();
-        $('a#scan').on('click',function(e){
-            var history_items = (window.localStorage.getItem("history_items") != null) ? JSON.parse(window.localStorage.getItem("history_items")) : new Array;
-            e.preventDefault(); 
-            cordova.plugins.barcodeScanner.scan(
-                function (result) {
-                    if (!result.cancelled) { 
-                        if (app.isValidURL(result.text)) {
-                            alert('Found URL: ' + result.text) ;
-                            cordova.InAppBrowser.open(result.text, '_system', 'location=yes'); 
-                        }else{
-                            alert('Found code: ' + result.text) ;
-                        }
-                        history_items.push(result.text);  
-                        window.localStorage.setItem("history_items", JSON.stringify(history_items));
-                    }
-                    app.displayHistoryItems();
-                }, 
-                function (error) {
-                    alert("Scanning failed: " + error);
-                }
-            );
-        }); 
+        appAds.init();  
     },
     
     clearHistoryItems: function(){
-        window.localStorage.clear();
-        $('div.history-list .items').html('<div class="no-border">'+ app.default_no_items_text +'</div>');
-        $('div.history-list #clear-all').css('visibility','hidden');
+        window.localStorage.clear(); 
+        $('div[data-page="history"] div.history-items').html('<div class="no-border">'+ app.default_no_items_text +'</div>');
+        $('a.delete').addClass('hidden');
     },
     
     displayHistoryItems: function(){
         try{
+           
             var history_items = JSON.parse(window.localStorage.getItem("history_items"));
             var html_result = '';
             //console.log('history_items ' + history_items);
@@ -89,22 +96,37 @@ var app = {
                 history_items.reverse();
                 for(var i=0; i < history_items.length; i++){
                     if (app.isValidURL(history_items[i])) {
-                        html_result += '<div><a href="#" onclick="cordova.InAppBrowser.open(\''+history_items[i]+'\', \'_system\', \'location=yes\')">'+history_items[i]+'</a></div>';
+                     
+                        html_result += '<li><a href="#" class="item-link" onclick="cordova.InAppBrowser.open(\''+history_items[i]+'\', \'_system\', \'location=yes\')">';
+                          html_result += '<div class="item-content">';
+                            html_result += '<div class="item-media"><i class="fa fa-asterisk"></i></div>';
+                            html_result += '<div class="item-inner">';
+                              html_result += '<div class="item-title">'+history_items[i]+'</div>';
+                            html_result += '</div>';
+                          html_result += '</div>';
+                        html_result += '</a></li>';
+                        
                     }else{
-                        html_result += '<div>'+history_items[i]+'</div>';
+                        html_result += '<li><a href="#" class="item-link">';
+                          html_result += '<div class="item-content">';
+                            html_result += '<div class="item-media"><i class="fa fa-asterisk"></i></div>';
+                            html_result += '<div class="item-inner">';
+                              html_result += '<div class="item-title">'+history_items[i]+'</div>';
+                            html_result += '</div>';
+                          html_result += '</div>';
+                        html_result += '</a></li>';
                     } 
-                }
-                $('div.history-list #clear-all').css('visibility','visible');
+                } 
+                html_result = '<ul>' +html_result+ '</ul>';
+                $('a.delete').removeClass('hidden');
             }else{
-                html_result += '<div class="no-border">'+ app.default_no_items_text +'</div>';
-                $('div.history-list #clear-all').css('visibility','hidden');
+                html_result += '<div class="text-center">'+ app.default_no_items_text +'</div>';
+                $('a.delete').addClass('hidden');
             }
-    
-            $('div.history-list .items').html(html_result);    
+            $('div[data-page="history"] div.history-items').html(html_result); 
         }catch(e){
             console.log('Err: ' + e);
         }
-
     },
     
     onResume: function(){
@@ -130,3 +152,6 @@ var app = {
     }
 };
 
+
+ 
+ 
