@@ -63,3 +63,6 @@ div.history-list div.items div a{
 .hidden{
     display: none !important;
 }
+.generate-result{
+    text-align: center;
+}

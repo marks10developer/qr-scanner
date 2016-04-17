@@ -19,6 +19,58 @@ $$(document).on('pageInit', '.page[data-page="history"]', function (e) {
     });
 });
 
+// Page Init generate code page
+$$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
+  
+    $$('#generate-code').on('click',function(){
+        if( $('input#qr-text').val().trim().length == 0 ) {  
+            fw7.alert('Text cannot be empty.', '<i class="fa fa-warning"></i> Warning');
+        }else if( !app.isAlphaNumeric($('input#qr-text').val()) ){
+            fw7.alert('Letters and numbers are only allowed. Remove any spaces and special characters.', '<i class="fa fa-warning"></i> Warning');
+        }else{  
+            if(navigator.onLine){
+                $('.generate-result').html('<span class="progressbar-infinite color-multi"></span>');
+                $.ajax({
+                    'url' : 'http://api.experia-industries.com/qr.php',
+                    'data' : {
+                        'chs' : '180x180',
+                        'cht' : 'qr',
+                        'chl' : $('input#qr-text').val().trim(),
+                        'choe' : 'UTF-8',
+                        'chld' : 'L|1'
+                    },
+                    'contentType': "image/png",
+                    'type' : 'GET',
+                    'timeout' : 35000
+                }).done(function(response, textStatus, jqXHR) { 
+                    $('.generate-result').html('<img src="'+response+'" width="140" />');
+                    $('.code-save').removeClass('hidden');
+                    $$('.code-save').on('click', function(){ 
+                        window.Base64ImageSaverPlugin.saveImageDataToLibrary(
+                                function(msg){
+                                    fw7.alert('Image saved to gallery', '<i class="fa fa-check-circle"></i> Success');
+                                },
+                                function(err){
+                                    fw7.alert('Error when saving image','<i class="fa fa-times-circle"></i> Warning');
+                                },
+                                response
+                            );
+                    });
+                    
+                }).fail(function(e) {
+                    if (e.statusText == 'timeout') {
+                       fw7.alert('Unable to generate code.', '<i class="fa fa-times-circle"></i> Slow Connection');
+                    }
+                });
+            }else{
+                fw7.alert('This requires internet connection.', '<i class="fa fa-times-circle"></i> No Connection');
+            }
+            
+        } 
+    });
+
+});
+
 // Start scanning code
 $$('a#scan').on('click', function(){
     var history_items = (window.localStorage.getItem("history_items") != null) ? JSON.parse(window.localStorage.getItem("history_items")) : new Array;
@@ -41,7 +93,6 @@ $$('a#scan').on('click', function(){
         }
     );
 });
-
 
 // Add main view
 var mainView = fw7.addView('.view-main', {});
@@ -77,7 +128,7 @@ var app = {
     receivedEvent: function(id) {
         $('.app').show();
         new FastClick(document.body); 
-        appAds.init();  
+        appAds.init(); 
     },
     
     clearHistoryItems: function(){
@@ -149,9 +200,14 @@ var app = {
     
     exitApp: function() {
       navigator.app.exitApp();
+    },
+    
+    isAlphaNumeric(e) {
+        var regExp = /^[A-Za-z0-9]+$/;
+        return (e.match(regExp));
     }
 };
 
 
- 
+
  

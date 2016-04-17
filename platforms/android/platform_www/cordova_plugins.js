@@ -26,6 +26,35 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.barcodeScanner"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-network-information/www/network.js",
+        "id": "cordova-plugin-network-information.network",
+        "clobbers": [
+            "navigator.connection",
+            "navigator.network.connection"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+        "id": "cordova-plugin-network-information.Connection",
+        "clobbers": [
+            "Connection"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "clobbers": [
+            "device"
+        ]
+    },
+    {
+        "file": "plugins/org.solderzzc.base64imagesaverplugin/www/Base64ImageSaverPlugin.js",
+        "id": "org.solderzzc.base64imagesaverplugin.Base64ImageSaverPlugin",
+        "clobbers": [
+            "window.Base64ImageSaverPlugin"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -35,7 +64,10 @@ module.exports.metadata =
     "cordova-plugin-admobpro": "2.13.0",
     "cordova-plugin-inappbrowser": "1.3.1-dev",
     "cordova-plugin-whitelist": "1.2.1",
-    "phonegap-plugin-barcodescanner": "4.1.0"
+    "phonegap-plugin-barcodescanner": "4.1.0",
+    "cordova-plugin-network-information": "1.2.0",
+    "cordova-plugin-device": "1.1.1",
+    "org.solderzzc.base64imagesaverplugin": "0.6.0"
 };
 // BOTTOM OF METADATA
 });

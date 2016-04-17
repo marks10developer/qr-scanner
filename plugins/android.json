@@ -21,6 +21,15 @@
         },
         "phonegap-plugin-barcodescanner": {
             "PACKAGE_NAME": "com.mackydev.qrscanner"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.mackydev.qrscanner"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.mackydev.qrscanner"
+        },
+        "org.solderzzc.base64imagesaverplugin": {
+            "PACKAGE_NAME": "com.mackydev.qrscanner"
         }
     },
     "dependent_plugins": {}
