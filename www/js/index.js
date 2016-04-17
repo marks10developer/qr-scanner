@@ -112,9 +112,6 @@ var app = {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         document.addEventListener('pause', this.onPause, false);
         document.addEventListener('resume', this.onResume, false);
-        document.addEventListener('backbutton', function() {
-          // pass exitApp as callbacks to the switchOff method 
-        }, false);
 
     },
     // deviceready Event Handler
@@ -180,13 +177,9 @@ var app = {
         }
     },
     
-    onResume: function(){
-        //app.toggleFlash(false);    
-    },
+    onResume: function(){  },
     
-    onPause: function(){
-        
-    },
+    onPause: function(){ },
     
      
     isValidURL: function(str) {
@@ -198,11 +191,8 @@ var app = {
         }
     },
     
-    exitApp: function() {
-      navigator.app.exitApp();
-    },
     
-    isAlphaNumeric(e) {
+    isAlphaNumeric: function(e) {
         var regExp = /^[A-Za-z0-9]+$/;
         return (e.match(regExp));
     }

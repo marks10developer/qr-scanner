@@ -61,7 +61,7 @@ div.history-list div.items div a{
     word-wrap: break-word;
 }
 .hidden{
-    display: none !important;
+    visibility : hidden; 
 }
 .generate-result{
     text-align: center;
