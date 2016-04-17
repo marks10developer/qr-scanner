@@ -25,9 +25,9 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
     $$('#generate-code').on('click',function(){
         if( $('input#qr-text').val().trim().length == 0 ) {  
             fw7.alert('Text cannot be empty.', '<i class="fa fa-warning"></i> Warning');
-        }else if( !app.isAlphaNumeric($('input#qr-text').val()) ){
-            fw7.alert('Letters and numbers are only allowed. Remove any spaces and special characters.', '<i class="fa fa-warning"></i> Warning');
-        }else{  
+        }else if( !app.isValidURL($('input#qr-text').val()) && !app.isAlphaNumeric($('input#qr-text').val())){
+            fw7.alert('<ul><li>Letters and numbers are only allowed.</li><li>Remove any spaces and special characters.</li><li>Add "http://" or "https://" if it\'s a URL.</li></ul>', '<i class="fa fa-warning"></i> Warning');
+        }else{
             if(navigator.onLine){
                 $('.generate-result').html('<span class="progressbar-infinite color-multi"></span>');
                 $.ajax({
@@ -35,7 +35,7 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                     'data' : {
                         'chs' : '180x180',
                         'cht' : 'qr',
-                        'chl' : $('input#qr-text').val().trim(),
+                        'chl' : encodeURI($('input#qr-text').val().trim()),
                         'choe' : 'UTF-8',
                         'chld' : 'L|1'
                     },
@@ -45,16 +45,16 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                 }).done(function(response, textStatus, jqXHR) { 
                     $('.generate-result').html('<img src="'+response+'" width="140" />');
                     $('.code-save').removeClass('hidden');
-                    $$('.code-save').on('click', function(){ 
+                    $$('.code-save').on('click', function(){
                         window.Base64ImageSaverPlugin.saveImageDataToLibrary(
-                                function(msg){
-                                    fw7.alert('Image saved to gallery', '<i class="fa fa-check-circle"></i> Success');
-                                },
-                                function(err){
-                                    fw7.alert('Error when saving image','<i class="fa fa-times-circle"></i> Warning');
-                                },
-                                response
-                            );
+                            function(msg){
+                                fw7.alert('Image saved to gallery', '<i class="fa fa-check-circle"></i> Success');
+                            },
+                            function(err){
+                                fw7.alert('Error when saving image','<i class="fa fa-times-circle"></i> Warning');
+                            },
+                            response
+                        );
                     });
                     
                 }).fail(function(e) {
@@ -177,7 +177,7 @@ var app = {
         }
     },
     
-    onResume: function(){  },
+    onResume: function(){ },
     
     onPause: function(){ },
     
