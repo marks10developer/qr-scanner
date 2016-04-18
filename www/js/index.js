@@ -48,7 +48,12 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                     $$('.code-save').on('click', function(){
                         window.Base64ImageSaverPlugin.saveImageDataToLibrary(
                             function(msg){
-                                fw7.alert('Image saved to gallery', '<i class="fa fa-check-circle"></i> Success');
+                                fw7.alert('Image saved to gallery', '<i class="fa fa-check-circle"></i> Success',function(){
+                                    var tm = setTimeout(function(){
+                                        appAds.loadInterstitial();
+                                        clearTimeout(tm);
+                                    }, 1000);
+                                });
                             },
                             function(err){
                                 fw7.alert('Error when saving image','<i class="fa fa-times-circle"></i> Warning');

@@ -1,28 +1,28 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.mackydev.qrscanner" version="1.5.3" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.mackydev.qrscanner" version="1.6.3" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <preference name="loglevel" value="DEBUG" />
     <feature name="AdMob">
         <param name="android-package" value="com.rjfun.cordova.admob.AdMobPlugin" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="Device">
+        <param name="android-package" value="org.apache.cordova.device.Device" />
+    </feature>
     <feature name="InAppBrowser">
         <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    </feature>
+    <feature name="NetworkStatus">
+        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
     <feature name="Whitelist">
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <feature name="BarcodeScanner">
-        <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner" />
-    </feature>
-    <feature name="NetworkStatus">
-        <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
-    </feature>
-    <feature name="Device">
-        <param name="android-package" value="org.apache.cordova.device.Device" />
-    </feature>
     <feature name="Base64ImageSaverPlugin">
         <param name="android-package" value="org.solderzzc.Base64ImageSaverPlugin.Base64ImageSaverPlugin" />
+    </feature>
+    <feature name="BarcodeScanner">
+        <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner" />
     </feature>
     <allow-intent href="market:*" />
     <name>QR Code Master</name>
