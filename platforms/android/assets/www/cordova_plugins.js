@@ -67,7 +67,8 @@ module.exports.metadata =
     "cordova-plugin-network-information": "1.2.0",
     "cordova-plugin-whitelist": "1.2.1",
     "org.solderzzc.base64imagesaverplugin": "0.6.0",
-    "phonegap-plugin-barcodescanner": "4.1.0"
+    "cordova-plugin-compat": "1.0.0",
+    "phonegap-plugin-barcodescanner": "5.0.1"
 };
 // BOTTOM OF METADATA
 });
