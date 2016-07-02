@@ -56,7 +56,8 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                                 });
                             },
                             function(err){
-                                fw7.alert('Error when saving image','<i class="fa fa-times-circle"></i> Warning');
+                                
+                                fw7.alert(err,'<i class="fa fa-times-circle"></i> Error');
                             },
                             response
                         );
