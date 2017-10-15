@@ -25,6 +25,11 @@
             var imageData = base64Data.replace(/data:image\/png;base64,/,'');
             return cordova.exec(successCallback, failureCallback, "Base64ImageSaverPlugin","saveImageDataToLibrary",[imageData]);
         }
+    },
+    requestPermission: function(){
+      var successCallback = function(){};
+      var failureCallback = function(){};
+      return cordova.exec(successCallback, failureCallback, "Base64ImageSaverPlugin","requestPermission", []);
     }
   };
   

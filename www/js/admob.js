@@ -21,17 +21,21 @@ appAds = {
   },
 
   
-  init: function(){
+  initBanner: function(){
     if(AdMob){
       AdMob.createBanner({
         adId: appAds.getConfig().banner, 
         position: AdMob.AD_POSITION.BOTTOM_CENTER, 
         autoShow: true
-      });
-      
+      }); 
+    }
+  },
+
+  initInterstitial: function(){
+    if(AdMob){  
       AdMob.prepareInterstitial({
         adId: appAds.getConfig().interstitial,
-        autoShow:false
+        autoShow: false
       });
     }
   },

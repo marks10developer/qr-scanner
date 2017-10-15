@@ -55,7 +55,7 @@ div.history-list div.items div a{
 
 .navbar, .subnavbar, .toolbar,
 .button.button-fill{
-    background: #0f3243 !important;
+    background: #9b0707 !important;
 }
 .modal-text{
     word-wrap: break-word;
@@ -63,6 +63,30 @@ div.history-list div.items div a{
 .hidden{
     visibility : hidden; 
 }
+.display-none{
+    display: none; 
+}
 .generate-result{
     text-align: center;
+}
+.navbar .center, .subnavbar .center{
+    font-size: 16px;
+}
+a#generate, a#scan{
+    height: auto;
+    padding: 15px;
+    border-radius: 10px;
+    text-transform: capitalize;
+}
+a#generate i, a#scan i{
+    font-size: 45px;
+}
+
+.image-saved{
+    font-size: 13px;
+    background-color: #15d32e;
+    padding: 5px;
+    border-radius: 3px;
+    color: white;
+    font-weight: 700;
 }

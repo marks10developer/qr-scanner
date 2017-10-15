@@ -6,10 +6,12 @@ import java.util.Calendar;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PermissionHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,18 +31,20 @@ import android.util.Log;
  * @author Vegard Løkken <vegard@headspin.no>
  */
 public class Base64ImageSaverPlugin extends CordovaPlugin {
+	public static final String ACTION_REQUEST_PERMISSION = "requestPermission";
 	public static final String ACTION = "saveImageDataToLibrary";
+	private String [] permissions = { Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
 	@Override
 	public boolean execute(String action, JSONArray data,
-			CallbackContext callbackContext) throws JSONException {
+						   CallbackContext callbackContext) throws JSONException {
 
 		if (action.equals(ACTION)) {
 
 			String base64 = data.optString(0);
 			if (base64.equals("")) // isEmpty() requires API level 9
 				callbackContext.error("Missing base64 string");
-			
+
 			// Create the bitmap from the base64 string
 			Log.d("Canvas2ImagePlugin", base64);
 			byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
@@ -48,18 +52,23 @@ public class Base64ImageSaverPlugin extends CordovaPlugin {
 			if (bmp == null) {
 				callbackContext.error("The image could not be decoded");
 			} else {
-				
-				// Save the image
-				File imageFile = savePhoto(bmp);
-				if (imageFile == null)
-					callbackContext.error("Error while saving image");
-				
-				// Update image gallery
-				scanPhoto(imageFile);
-				
-				callbackContext.success(imageFile.toString());
+					// Save the image
+					File imageFile = savePhoto(bmp);
+					if (imageFile == null)
+						callbackContext.error("Error while saving image");
+
+					// Update image gallery
+					scanPhoto(imageFile);
+
+					callbackContext.success(imageFile.toString());
 			}
-			
+
+			return true;
+		} else if(action.equals(ACTION_REQUEST_PERMISSION)){
+			//android permission auto add
+			if(!hasPermisssion()) {
+				requestPermissions(0);
+			}
 			return true;
 		} else {
 			return false;
@@ -68,7 +77,7 @@ public class Base64ImageSaverPlugin extends CordovaPlugin {
 
 	private File savePhoto(Bitmap bmp) {
 		File retVal = null;
-		
+
 		try {
 			Calendar c = Calendar.getInstance();
 			String date = "" + c.get(Calendar.DAY_OF_MONTH)
@@ -90,15 +99,15 @@ public class Base64ImageSaverPlugin extends CordovaPlugin {
 			 */
 			if (check >= 1) {
 				folder = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-				
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+
 				if(!folder.exists()) {
 					folder.mkdirs();
 				}
 			} else {
 				folder = Environment.getExternalStorageDirectory();
 			}
-			
+
 			File imageFile = new File(folder, "c2i_" + date.toString() + ".png");
 
 			FileOutputStream out = new FileOutputStream(imageFile);
@@ -113,14 +122,39 @@ public class Base64ImageSaverPlugin extends CordovaPlugin {
 		}
 		return retVal;
 	}
-	
-	/* Invoke the system's media scanner to add your photo to the Media Provider's database, 
+
+	/* Invoke the system's media scanner to add your photo to the Media Provider's database,
 	 * making it available in the Android Gallery application and to other apps. */
 	private void scanPhoto(File imageFile)
 	{
 		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-	    Uri contentUri = Uri.fromFile(imageFile);
-	    mediaScanIntent.setData(contentUri);	      		  
-	    cordova.getActivity().sendBroadcast(mediaScanIntent);
-	} 
+		Uri contentUri = Uri.fromFile(imageFile);
+		mediaScanIntent.setData(contentUri);
+		cordova.getActivity().sendBroadcast(mediaScanIntent);
+	}
+
+	/**
+	 * check application's permissions
+	 */
+	public boolean hasPermisssion() {
+		for(String p : permissions)
+		{
+			if(!PermissionHelper.hasPermission(this, p))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * We override this so that we can access the permissions variable, which no longer exists in
+	 * the parent class, since we can't initialize it reliably in the constructor!
+	 *
+	 * @param requestCode The code to get request action
+	 */
+	public void requestPermissions(int requestCode)
+	{
+		PermissionHelper.requestPermissions(this, requestCode, permissions);
+	}
 }

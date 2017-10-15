@@ -21,13 +21,16 @@ $$(document).on('pageInit', '.page[data-page="history"]', function (e) {
 
 // Page Init generate code page
 $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
-  
-    $$('#generate-code').on('click',function(){
+    window.Base64ImageSaverPlugin.requestPermission();
+    $('#generate-code').click(function(){       
+        $('#code-save').addClass('hidden');
+        $('.image-saved').addClass('display-none');
         if( $('input#qr-text').val().trim().length == 0 ) {  
             fw7.alert('Text cannot be empty.', '<i class="fa fa-warning"></i> Warning');
         }else if( !app.isValidURL($('input#qr-text').val()) && !app.isAlphaNumeric($('input#qr-text').val())){
             fw7.alert('<ul><li>Letters and numbers are only allowed.</li><li>Remove any spaces and special characters.</li><li>Add "http://" or "https://" if it\'s a URL.</li></ul>', '<i class="fa fa-warning"></i> Warning');
         }else{
+            
             if(navigator.onLine){
                 $('.generate-result').html('<span class="progressbar-infinite color-multi"></span>');
                 $.ajax({
@@ -43,20 +46,23 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                     'type' : 'GET',
                     'timeout' : 35000
                 }).done(function(response, textStatus, jqXHR) { 
+                    appAds.initInterstitial(); 
                     $('.generate-result').html('<img src="'+response+'" width="140" />');
-                    $('.code-save').removeClass('hidden');
-                    $$('.code-save').on('click', function(){
+                    $('#code-save').removeClass('hidden');
+                    $('#code-save').on('click', function(){
+                        $(this).addClass('hidden');
+                        $('.image-saved').addClass('display-none');
                         window.Base64ImageSaverPlugin.saveImageDataToLibrary(
-                            function(msg){
-                                fw7.alert('Image saved to gallery', '<i class="fa fa-check-circle"></i> Success',function(){
-                                    var tm = setTimeout(function(){
-                                        appAds.loadInterstitial();
-                                        clearTimeout(tm);
-                                    }, 1000);
-                                });
+                            function(msg){ 
+                                //fw7.alert('Image has been saved to Photo Gallery', '<i class="fa fa-check-circle"></i> Hooray!'); 
+                                var rand = Math.random(1);
+                                var wholeNum = Math.ceil(rand * 100); 
+                                if ((wholeNum  % 2) == 0) {
+                                    appAds.loadInterstitial(); 
+                                }
+                                $('.image-saved').removeClass('display-none');
                             },
-                            function(err){
-                                
+                            function(err){ 
                                 fw7.alert(err,'<i class="fa fa-times-circle"></i> Error');
                             },
                             response
@@ -69,10 +75,11 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                     }
                 });
             }else{
-                fw7.alert('This requires internet connection.', '<i class="fa fa-times-circle"></i> No Connection');
+                fw7.alert('Please connect to the internet.', '<i class="fa fa-times-circle"></i> Connection Error');
             }
             
-        } 
+        }
+        //$(this).unbind();
     });
 
 });
@@ -131,7 +138,7 @@ var app = {
     receivedEvent: function(id) {
         $('.app').show();
         new FastClick(document.body); 
-        appAds.init(); 
+        appAds.initBanner(); 
     },
     
     clearHistoryItems: function(){
