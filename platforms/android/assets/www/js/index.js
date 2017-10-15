@@ -22,14 +22,17 @@ $$(document).on('pageInit', '.page[data-page="history"]', function (e) {
 // Page Init generate code page
 $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
     window.Base64ImageSaverPlugin.requestPermission();
+    appAds.initInterstitial(); 
     $('#generate-code').click(function(){       
-        $('#code-save').addClass('hidden');
+        $('#code-save').addClass('display-none');
         $('.image-saved').addClass('display-none');
         if( $('input#qr-text').val().trim().length == 0 ) {  
             fw7.alert('Text cannot be empty.', '<i class="fa fa-warning"></i> Warning');
-        }else if( !app.isValidURL($('input#qr-text').val()) && !app.isAlphaNumeric($('input#qr-text').val())){
+        }
+        /* else if( !app.isValidURL($('input#qr-text').val()) && !app.isAlphaNumeric($('input#qr-text').val())){
             fw7.alert('<ul><li>Letters and numbers are only allowed.</li><li>Remove any spaces and special characters.</li><li>Add "http://" or "https://" if it\'s a URL.</li></ul>', '<i class="fa fa-warning"></i> Warning');
-        }else{
+        }*/
+        else{
             
             if(navigator.onLine){
                 $('.generate-result').html('<span class="progressbar-infinite color-multi"></span>');
@@ -46,21 +49,18 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                     'type' : 'GET',
                     'timeout' : 35000
                 }).done(function(response, textStatus, jqXHR) { 
-                    appAds.initInterstitial(); 
+                    
                     $('.generate-result').html('<img src="'+response+'" width="140" />');
-                    $('#code-save').removeClass('hidden');
-                    $('#code-save').on('click', function(){
-                        $(this).addClass('hidden');
-                        $('.image-saved').addClass('display-none');
+                    $('#code-save').removeClass('display-none');
+                    $('#code-save').on('click', function(){ 
+                        $(this).addClass('display-none');
+                        //$('.image-saved').addClass('display-none');
                         window.Base64ImageSaverPlugin.saveImageDataToLibrary(
                             function(msg){ 
                                 //fw7.alert('Image has been saved to Photo Gallery', '<i class="fa fa-check-circle"></i> Hooray!'); 
-                                var rand = Math.random(1);
-                                var wholeNum = Math.ceil(rand * 100); 
-                                if ((wholeNum  % 2) == 0) {
-                                    appAds.loadInterstitial(); 
-                                }
+                                appAds.loadInterstitial(); 
                                 $('.image-saved').removeClass('display-none');
+                                
                             },
                             function(err){ 
                                 fw7.alert(err,'<i class="fa fa-times-circle"></i> Error');
@@ -78,8 +78,7 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
                 fw7.alert('Please connect to the internet.', '<i class="fa fa-times-circle"></i> Connection Error');
             }
             
-        }
-        //$(this).unbind();
+        } 
     });
 
 });
@@ -87,6 +86,7 @@ $$(document).on('pageInit', '.page[data-page="generate"]', function (e) {
 // Start scanning code
 $$('a#scan').on('click', function(){
     var history_items = (window.localStorage.getItem("history_items") != null) ? JSON.parse(window.localStorage.getItem("history_items")) : new Array;
+        
     cordova.plugins.barcodeScanner.scan(
         function (result) {
             if (!result.cancelled) { 
@@ -149,7 +149,9 @@ var app = {
     
     displayHistoryItems: function(){
         try{
-           
+            /* var ff=new Array('asdasdas','http://facebook.com','asdasdas2');
+            window.localStorage.setItem("history_items", JSON.stringify(ff));*/
+            
             var history_items = JSON.parse(window.localStorage.getItem("history_items"));
             var html_result = '';
             //console.log('history_items ' + history_items);
@@ -160,9 +162,10 @@ var app = {
                      
                         html_result += '<li><a href="#" class="item-link" onclick="cordova.InAppBrowser.open(\''+history_items[i]+'\', \'_system\', \'location=yes\')">';
                           html_result += '<div class="item-content">';
-                            html_result += '<div class="item-media"><i class="fa fa-asterisk"></i></div>';
+                            html_result += '<div class="item-media"><i class="fa fa-globe"></i></div>';
                             html_result += '<div class="item-inner">';
                               html_result += '<div class="item-title">'+history_items[i]+'</div>';
+                              html_result += '<div class="item-after"></div>';
                             html_result += '</div>';
                           html_result += '</div>';
                         html_result += '</a></li>';
@@ -170,9 +173,10 @@ var app = {
                     }else{
                         html_result += '<li><a href="#" class="item-link">';
                           html_result += '<div class="item-content">';
-                            html_result += '<div class="item-media"><i class="fa fa-asterisk"></i></div>';
+                            html_result += '<div class="item-media"><i class="fa fa-font"></i></div>';
                             html_result += '<div class="item-inner">';
                               html_result += '<div class="item-title">'+history_items[i]+'</div>';
+                              html_result += '<div class="item-after" onclick="app.onHistoryItemCopy(\''+history_items[i]+'\');"><i class="fa fa-copy"></i>&nbsp;Copy</div>'; 
                             html_result += '</div>';
                           html_result += '</div>';
                         html_result += '</a></li>';
@@ -184,7 +188,10 @@ var app = {
                 html_result += '<div class="text-center">'+ app.default_no_items_text +'</div>';
                 $('a.delete').addClass('hidden');
             }
-            $('div[data-page="history"] div.history-items').html(html_result); 
+            $('div[data-page="history"] div.history-items').html(html_result);
+
+
+
         }catch(e){
             console.log('Err: ' + e);
         }
@@ -194,6 +201,10 @@ var app = {
     
     onPause: function(){ },
     
+    onHistoryItemCopy: function(txt){
+        fw7.alert('&quot;<b>' + txt + '</b>&quot; has now been copied to clipboard', '<i class="fa fa-check-circle"></i> Clipboard');
+        cordova.plugins.clipboard.copy(txt);
+    },
      
     isValidURL: function(str) {
         var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;

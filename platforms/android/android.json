@@ -85,6 +85,10 @@
                         {
                             "xml": "<feature name=\"BarcodeScanner\"><param name=\"android-package\" value=\"com.phonegap.plugins.barcodescanner.BarcodeScanner\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Clipboard\"><param name=\"android-package\" value=\"com.verso.cordova.clipboard.Clipboard\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -122,6 +126,9 @@
             "PACKAGE_NAME": "com.mackydev.qrscanner"
         },
         "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "com.mackydev.qrscanner"
+        },
+        "com.verso.cordova.clipboard": {
             "PACKAGE_NAME": "com.mackydev.qrscanner"
         }
     },
@@ -182,6 +189,13 @@
             "clobbers": [
                 "cordova.plugins.barcodeScanner"
             ]
+        },
+        {
+            "file": "plugins/com.verso.cordova.clipboard/www/clipboard.js",
+            "id": "com.verso.cordova.clipboard.Clipboard",
+            "clobbers": [
+                "cordova.plugins.clipboard"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -193,6 +207,7 @@
         "cordova-plugin-whitelist": "1.2.1",
         "org.solderzzc.base64imagesaverplugin": "0.6.0",
         "cordova-plugin-compat": "1.0.0",
-        "phonegap-plugin-barcodescanner": "5.0.1"
+        "phonegap-plugin-barcodescanner": "5.0.1",
+        "com.verso.cordova.clipboard": "0.1.0"
     }
 }

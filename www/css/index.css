@@ -90,3 +90,19 @@ a#generate i, a#scan i{
     color: white;
     font-weight: 700;
 }
+.list-block .item-after, input#qr-text{
+    font-size: 12px;
+}
+.list-block .item-link .item-inner{
+    background-image: none;
+    padding-right: 0;
+}
+.list-block .item-title{
+    font-size: 14px;
+}
+.list-block .item-media{
+    min-width: 0;
+}
+.list-block .item-content{
+    padding-left: 0;
+}

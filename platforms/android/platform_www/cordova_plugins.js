@@ -55,6 +55,13 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.barcodeScanner"
         ]
+    },
+    {
+        "file": "plugins/com.verso.cordova.clipboard/www/clipboard.js",
+        "id": "com.verso.cordova.clipboard.Clipboard",
+        "clobbers": [
+            "cordova.plugins.clipboard"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -68,7 +75,8 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.2.1",
     "org.solderzzc.base64imagesaverplugin": "0.6.0",
     "cordova-plugin-compat": "1.0.0",
-    "phonegap-plugin-barcodescanner": "5.0.1"
+    "phonegap-plugin-barcodescanner": "5.0.1",
+    "com.verso.cordova.clipboard": "0.1.0"
 };
 // BOTTOM OF METADATA
 });

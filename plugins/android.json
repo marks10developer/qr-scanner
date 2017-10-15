@@ -30,6 +30,9 @@
         },
         "phonegap-plugin-barcodescanner": {
             "PACKAGE_NAME": "com.mackydev.qrscanner"
+        },
+        "com.verso.cordova.clipboard": {
+            "PACKAGE_NAME": "com.mackydev.qrscanner"
         }
     },
     "dependent_plugins": {
